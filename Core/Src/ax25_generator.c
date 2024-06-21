@@ -13,9 +13,9 @@ extern uint8_t tx_cmd[CMD_PAYLOAD];
 
 void AX_25PacketFormation(uint8_t *main_cmd) {
 
-	myDebug("AX.25 information field: \r\n");
+	myDebug("AX.25 information field: 0x%x \r\n");
 	for (int i = 0; i < 13; i++) {
-		myDebug("%x ", main_cmd[i]);
+		myDebug("%02x ", main_cmd[i]);
 	}
 	myDebug("\r\n");
 
@@ -54,10 +54,10 @@ void AX_25PacketFormation(uint8_t *main_cmd) {
 	// Calculate CRC-CCITT for the packet data starting from tx_cmd[0] to tx_cmd[16]
 
 	uint16_t crc = 0;
-	crc = calculateCRC_CCITT_AX25(buff_head, sizeof(buff_head));
+	crc = calc_CRC(buff_head, sizeof(buff_head));
 
-	tx_cmd[17] = (crc >> 8) && 0xFF;
-	tx_cmd[18] = crc & 0xFF;
+	tx_cmd[17] = (crc >> 8);
+	tx_cmd[18] = crc;
 
 	// information field
 	int i = 19;
@@ -82,7 +82,7 @@ void AX_25PacketFormation(uint8_t *main_cmd) {
 	myDebug("\npacket_len: %d\r\n", i + 1);
 	myDebug("packet: 0x%x\r\n", tx_cmd);
 	for (int j = 0; j <= i; j++) {
-		myDebug("%x ", tx_cmd[j]);
+		myDebug("%02x ", tx_cmd[j]);
 	}
 	myDebug("\r\n");
 }
